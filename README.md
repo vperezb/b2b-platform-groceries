@@ -1,3 +1,9 @@
+# b2b-platform-groceries
+
+## Working example
+
+https://almarcat.ew.r.appspot.com/
+
 ## First install
 
 cd C:\Users\V\Documents\almarcat\gitprojects\git-almarcat
