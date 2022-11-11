@@ -1,0 +1,55 @@
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+<meta name="google-site-verification" content="FSP-BJeVueeAbBdF8uDFRkz8UXdl4OcQsIwvscrD4VI" />
+
+<meta name="description" content="" />
+<meta name="author" content="" />
+
+<title>almar.cat | Plataforma de compra-venda per a productors-botigues de productes agraris</title>
+<!-- Favicon-->
+<link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='assets/favicon_64.png') }}" />
+<!-- Bootstrap icons-->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css" rel="stylesheet"
+    type="text/css" />
+<!-- Google fonts-->
+<link href="https://fonts.googleapis.com/css?family=Lato:300,400,700,300italic,400italic,700italic" rel="stylesheet"
+    type="text/css" />
+<!-- Core theme CSS (includes Bootstrap)-->
+<link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet" />
+
+<!-- Firebase -->
+
+<script src="{{ url_for('static', filename='js/firebase.js') }}"></script>
+
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+   https://firebase.google.com/docs/web/setup#available-libraries -->
+
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-analytics.js"></script>
+<script src="https://www.gstatic.com/firebasejs/7.13.2/firebase-auth.js"></script>
+<script>
+    // Your web app's Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyA5RPt6PARsNvbiMK9WzDiJWS3fyr6sioI",
+        authDomain: "almarcat.firebaseapp.com",
+        projectId: "almarcat",
+        storageBucket: "almarcat.appspot.com",
+        messagingSenderId: "168901922316",
+        appId: "1:168901922316:web:b58d1d93e63f1e1884e829",
+        measurementId: "G-P3Z5RSWP74"
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+</script>
+
+
+<script src="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.js"></script>
+<link type="text/css" rel="stylesheet" href="https://www.gstatic.com/firebasejs/ui/4.5.0/firebase-ui-auth.css" />
+
+
+<!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script> -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>

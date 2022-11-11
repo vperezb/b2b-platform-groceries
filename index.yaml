@@ -1,0 +1,111 @@
+indexes:
+- kind: event
+  ancestor: yes
+  properties:
+  - name: timestamp
+
+# ITEM
+
+- kind: item
+  properties:
+  - name: country
+  - name: is_enabled
+  - name: is_online
+  - name: created_at
+    direction: desc
+
+- kind: item
+  properties:
+  - name: aal2
+  - name: country
+  - name: is_enabled
+  - name: updated_at
+    direction: desc
+
+- kind: item
+  properties:
+  - name: aal1
+  - name: country
+  - name: is_enabled
+  - name: locality
+  - name: updated_at
+    direction: desc
+
+- kind: item
+  properties:
+  - name: country
+  - name: is_enabled
+  - name: locality
+  - name: updated_at
+    direction: desc
+
+- kind: item
+  properties:
+  - name: aal1
+  - name: updated_at
+    direction: desc
+
+# STORE
+
+- kind: store
+  properties:
+  - name: aal1
+  - name: created_at
+    direction: desc
+
+- kind: store
+  properties:
+  - name: country
+  - name: is_verified
+  - name: created_at
+    direction: desc
+
+- kind: store
+  properties:
+  - name: country
+  - name: is_verified
+  - name: updated_at
+    direction: desc
+    
+- kind: store
+  properties:
+  - name: country
+  - name: market
+  - name: created_at
+    direction: desc
+
+- kind: store
+  properties:
+  - name: aal1
+  - name: locality
+  - name: created_at
+    direction: desc
+
+- kind: store
+  properties:
+  - name: aal2
+  - name: created_at
+    direction: desc
+    
+# almarcat-donde-hay-cola
+- kind: store_feedback
+  ancestor: yes
+  properties:
+  - name: store_id
+  - name: created_at
+  - name: amount_people_queue
+  - name: waiting_time
+
+- kind: store_feedback
+  ancestor: yes
+  properties:
+  - name: store_id
+  - name: created_at
+    direction: desc
+
+- kind: store_feedback
+  ancestor: yes
+  properties:
+  - name: created_at
+    direction: desc
+

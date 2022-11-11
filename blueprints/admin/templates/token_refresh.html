@@ -1,0 +1,26 @@
+<!doctype html>
+<html>
+
+<head>
+    {% include 'components/basics/head.html' %}
+</head>
+
+<body>
+    {% include 'components/basics/body.html' %}
+    {% include 'components/basics/header.html' %}
+    <div class="container" style="min-height: 500px;">
+        <div class="row pt-2">
+            <div class="col  col-12">
+                <div class="card mx-auto" style="width: 18rem;">
+                    <div class="card-body">
+                        Tu sesión ha caducado, actualiza la página para acceder de nuevo.
+                        <a href ="/admin"><button type="button" class="btn btn-secondary btn-lg">Actualizar</button></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% include 'components/basics/footer.html' %}
+</body>
+
+</html>

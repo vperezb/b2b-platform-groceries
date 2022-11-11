@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'components/basics/head.html' %}
+</head>
+
+<body>
+    <!-- Fixed navbar -->
+    {% include 'components/basics/nav.html' %}
+    <section class="features-icons bg-white text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Comanda # {{ order['friendly_id'] }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row justify-content-center">
+                                <div class="">
+                                    <div class="cart-container">
+                                        <div class="cart-head">
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless">
+                                                    <thead>
+                                                        <tr>
+                                                            
+                                                            <th scope="col">Imatge</th>
+                                                            <th scope="col">Producte</th>
+                                                            <th scope="col">Preu</th>
+                                                            <th scope="col">Quantitat</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for item in order['item_lines'] %}
+                                                        <tr>
+                                                            <td><img src="{{ item['image'] or item['images'][0]}}"
+                                                                    class="img-fluid" width="35" alt="product"></td>
+                                                            <td>{{ item['title']|truncate(60) }}</td>
+                                                            <td>{{ item['price'] }} € <small>/{{ item['price_unit'] }}</small></td> 
+                                                            <td>
+                                                                {{ item['qty'] }} {{ item['price_unit'] }}
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+
+                                                        </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="cart-footer text-right">
+                                            <h2>Total: {{ order['amount_to_pay'] }}</h2>
+                                            <p><bold>Comentari:</bold> {{order['comment']}}</p>
+                                            <a href="/admin/get_order_csv/{{order['id']}}"><button type="button" class="btn btn-success">Descarrega .csv de la comanda</button></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </section>
+
+
+    <!-- Footer -->
+    {% include 'components/basics/footer.html' %}
+
+
+</body>
+
+</html>

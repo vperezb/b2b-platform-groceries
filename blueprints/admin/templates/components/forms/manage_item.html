@@ -1,0 +1,221 @@
+<script src="{{ url_for('static', filename='js/bootstrap3-typeahead.min.js') }}"></script>
+
+<form id="create_store" method="post" action="{{ url_for('admin.item_engine') }}" enctype=multipart/form-data
+  onsubmit="showLoader()">
+  {% if item_info['images'] %}
+  {% set image_url = item_info['images'][0] %}
+  {% endif %}
+  <div class="row g-3">
+
+    <div class="col-md-8">
+      <label for="title">Nom del producte</label>
+      <input class="form-control" type="text" placeholder="Introduce el nombre del producto" name="title"
+        value="{{ item_info['title'] }}">
+    </div>
+
+    <div class="col-md-4">
+      <label for="title">Tipus de producte</label>
+      <input class="form-control typehead" data-provide="typeahead" id="product_type_name" autocomplete="off" type="text"
+        placeholder="Selecciona el tipus de producte" name="product_type_name" value="{{ item_info['product_type_name'] }}">
+    </div>
+
+    <div class="col-md-2">
+      <label for="picture">Imagen</label>
+      <img style="max-height: 70px; max-width: 90px;"
+        src="{{ image_url or 'https://img.utdstc.com/icons/almarcat-android.png:300' }}">
+    </div>
+    <div class="col-md-6">
+      <label for="picture">Cambiar imagen</label>
+      <input type="file" class="form-control-file" id="picture" name="picture">
+      <input name="url_image" id="url_image" value="{{ image_url }}" hidden>
+    </div>
+    <div class="col-md-4">
+      <label for="producer">Productor</label>
+      <input class="form-control" id="producer" autocomplete="on" type="text"
+        placeholder="Omple el productor" name="producer" onchange="onProducerChange()" value="{{ item_info['producer'] or 'Producte propi'}}">
+    </div>
+
+
+    <div class="col-md-4">
+      <label for="price_now">Precio</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">€</div>
+        </div>
+        <input class="form-control" type="number" id="price_now" name="price_now" min="0" step="0.01" placeholder="0.00"
+          value="{{ item_info['price_now'] }}" required>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <label for="title">Unidad de medida</label>
+      <select class="form-select" name="price_unit" value="{{ item_info['price_unit'] }}" required>
+        <option value="unit" {% if item_info['price_unit']=='unit' %} selected {% endif %}>Unitat</option>
+        <option value="bunch" {% if item_info['price_unit']=='bunch' %} selected {% endif %}>Manat</option>
+        <option value="kg" {% if item_info['price_unit']=='kg' %} selected {% endif %}>Kg</option>
+      </select>
+
+    </div>
+    <div class="col-md-4">
+      <label for="title">Cantidad</label>
+      <input id="qty_selector" class="form-control" type="number" name='qty' onchange="checkIfIts0AndDisable()" placeholder="Introduce el nombre del producto" name="title"
+        value="{{ item_info['qty'] }}" min="0">
+    </div>
+
+
+
+    <input name="id" id="id" value="{{ item_info['id']  }}" hidden>
+    <input name="store_code_name" id="store_code_name" value="{{ item_info['store_code_name'] }}" hidden>
+    <input name="product_type_id" id="product_type_id" value="{{ item_info['product_type_id'] }}" hidden>
+    <input name="method" id="method" value="{{ method }}" hidden>
+    <div class="btn-toolbar justify-content-between" role="toolbar" aria-label="Toolbar with button groups">
+      <button type="submit" class="btn btn-success">Guardar</button>
+      <div class="custom-control custom-switch">
+        <input type="checkbox" class="custom-control-input" id="is_enabled" name="is_enabled" value="1" checked>
+        <label class="custom-control-label" id="is_enabled_label" for="is_enabled"></label>
+      </div>
+      <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#deleteItemModal">
+        Eliminar producto
+      </button>
+    </div>
+</form>
+
+<button id="hiddenButtonForLoader" type="button" class="btn btn-primary" data-toggle="modal"
+  data-target="#staticBackdrop" hidden></button>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteItemModal" tabindex="-1" role="dialog" aria-labelledby="deleteItemModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteItemModalLabel">Eliminar producto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Estás seguro que quieres eliminar el producto?
+        <div class="alert alert-danger" role="alert">
+          Atención, si estás copiando un producto y haces click en eliminar se eliminará el producto origen! Estamos
+          trabajando en ello, gracias!
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancelar</button>
+        <button type="button" class="btn btn-danger"
+          onclick="window.location.href = '{{ url_for('admin.manage_item_page') }}?store_code_name={{ item_info['store_code_name'] }}&i={{ item_info['id'] }}&method=delete'">Si,
+          eliminar producto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Guardando producto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <p>
+            Terminamos en un momento! 🎉
+          </p>
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p>
+          Estás on-fire, a por el siguiente! 🔥
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+  // Set state for all form fields
+  var is_enabled = ('{{ item_info['is_enabled'] }}' == 'True' || '{{ item_info['is_enabled'] }}' == '');
+  if (is_enabled) {
+    document.getElementById('is_enabled').setAttribute('checked', '')
+    document.getElementById('is_enabled_label').innerHTML = 'Producto activado';
+    document.getElementById('is_enabled').setAttribute('value', '1')
+  }
+  else {
+    document.getElementById('is_enabled').removeAttribute('checked')
+    document.getElementById('is_enabled_label').innerHTML = 'Producto desactivado';
+    document.getElementById('is_enabled').setAttribute('value', '0')
+  }
+
+  jQuery('#is_enabled').click(function () {
+    if ($(this).is(':checked')) {
+      $(this).siblings('label').html('Producto activado');
+      document.getElementById('is_enabled').setAttribute('value', '1')
+    } else {
+      $(this).siblings('label').html('Producto desactivado');
+      document.getElementById('is_enabled').setAttribute('value', '0')
+    }
+  });
+
+  function showLoader() {
+    document.getElementById("hiddenButtonForLoader").click(); // Click on the checkbox
+  }
+
+  jQuery.get("/api/product_types", function (data) {
+    $("#product_type_name").typeahead({
+      source: function (query, process) {
+        tags = [];
+        map = {};
+
+        $.each(data, function (i, tag) {
+          map[tag.ES_ca] = tag;
+          tags.push(tag.ES_ca);
+        });
+
+        process(tags);
+      },
+      updater: function (item) {
+        document.getElementById('product_type_id').value = map[item].id;
+        return item;
+      }
+    });
+  }, 'json');
+
+  function checkIfIts0AndDisable(){
+    if (document.getElementById('qty_selector').value == "0"){
+      //document.getElementById('is_enabled').setAttribute('value', '0')
+      
+      
+      if (document.getElementById('is_enabled').value == "1"){
+        $('#is_enabled').trigger('click')
+      }
+      
+    }
+    else if (document.getElementById('qty_selector').value != "0"){
+      //document.getElementById('is_enabled').setAttribute('value', '0')
+      
+      
+      if (document.getElementById('is_enabled').value == "0"){
+        $('#is_enabled').trigger('click')
+      }
+      
+    }
+  }
+
+  function onProducerChange(){
+    if (document.getElementById('producer').value == ""){  
+      document.getElementById('producer').value = "Producte propi"
+      console.log('aaaa')
+    }
+  }
+</script>
+

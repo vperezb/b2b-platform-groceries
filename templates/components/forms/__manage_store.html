@@ -1,0 +1,353 @@
+<script src="{{ url_for('public.static', filename='js/statistics_manager.js') }}"></script>
+
+{% if store_info %}
+<h2>Editar tienda</h2>
+<script>
+  // On mouse-over, execute myFunction
+  function showLoader() {
+    document.getElementById("hiddenButtonForLoader").click(); // Click on the checkbox
+  }
+</script>
+{% else %}
+<h2>Crear tienda</h2>
+<script>raiseEvent('stats_event', 'store_create_start', {})</script>
+<script>
+  // On mouse-over, execute myFunction
+  function showLoader() {
+    raiseEvent('stats_event', 'store_create_submit', {})
+    document.getElementById("hiddenButtonForLoader").click(); // Click on the checkbox
+  }
+</script>
+{% endif %}
+
+<form id="create_store" method="post" action="{{ url_for('admin.store_engine') }}" enctype=multipart/form-data
+  onsubmit="showLoader()">
+  <div class="form-row" hidden>
+    <div class="form-group col-md-12">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="1" id="is_group" name="is_group">
+        <label class="form-check-label" for="is_group">
+          Marca la casilla si quieres crear una página para un grupo de tiendas.
+        </label>
+      </div>
+      <small>Cuando hayas guardado, podrás añadir tiendas desde el botón añadir tiendas de tu panel.</small>
+    </div>
+  </div>
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="name">Nombre completo de la tienda</label>
+      <input class="form-control" type="text" id="name" name="name" value="{{ store_info['name'] }}"
+        placeholder="Mi tienda super guay de la muerte" required>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="code_name">Nombre para compartir</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">@</div>
+        </div>
+        <input title="Sólo puede contener letras, números y _ - " name="code_name" id="code_name" type="text"
+          class="form-control" placeholder="tienda_guay" pattern="^[A-Za-z0-9_-]{3,25}$"
+          value="{{ store_info['code_name'] }}" required>
+      </div>
+      <small class="form-text text-muted">Sólo puede contener letras, números y _ - .</small>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-1">
+      <label for="profile_image_placeholder">Logo</label>
+      <img id="profile_image_placeholder" class="form-control-file"
+        src="{{ store_info['profile_image'] or 'https://img.utdstc.com/icons/almarcat-android.png:300' }}"
+        style="width: 50px;height: 50px;" alt="your image" name="profile_image_placeholder" />
+    </div>
+    <div class="form-group col-md-4">
+      <label for="profile_image">Cambiar imagen</label>
+      <input type="file" class="form-control-file" id="profile_image" name="profile_image">
+      <input type="text" id="profile_image_url" name="profile_image_url" value="{{ store_info['profile_image'] }}"
+        hidden>
+    </div>
+    <div class="form-group col-md-2">
+      <label for="header_image_placeholder">Fondo</label>
+      <img id="header_image_placeholder" class="form-control-file"
+        src="{{ store_info['header_image'] or 'https://images.pexels.com/photos/264507/pexels-photo-264507.jpeg?auto=compress&cs=tinysrgb&dpr=3&h=750&w=1260' }}"
+        style="max-width: 150px; height: 50px;" name="header_image_placeholder" alt="your image" />
+    </div>
+    <div class="form-group col-md-4">
+      <label for="header_image">Cambiar imagen</label>
+      <input type="file" class="form-control-file" id="header_image" name="header_image">
+      <input type="text" id="header_image_url" name="header_image_url" value="{{ store_info['header_image'] }}" hidden>
+    </div>
+    <div class="form-group col-md-1">
+      <label for="primary_color">Color principal</label>
+      <input type="color" class="form-control-file" id="primary_color" name="primary_color" value="#d2312e"
+        value="{{ store_info['primary_color'] }}">
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="headline">Slogan</label>
+      <input class="form-control" type="text" id="headline" name="headline" value="{{ store_info['headline'] }}"
+        placeholder="El mejor vino del mundo, en la puerta de tu casa">
+    </div>
+    <div class="form-group col-md-6">
+      <label for="category_name">Categoria de la tienda</label>
+      <select class="form-control" type="text" id="category_name" name="category_name"
+        value="{{ store_info['category_name'] }}" placeholder="Alimentación"></select>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <label for="description">Descripción</label>
+    <textarea class="form-control" name="description" id="description" rows="4"
+      placeholder="Tienda de cosas chulas por precios chulos, te esperamos!">{{ store_info['description'] }}</textarea>
+    <small id="phone_country_prefixHelp" class="form-text text-muted">También puedes añadir emojis. <a
+        href="https://emojipedia.org/" target="_blank">aqui</a> tienes una lista!</small>
+
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+    <label for="adress">Dirección</label>
+    <input class="form-control" type="text" id="adress" name="adress" value="{{ store_info['adress'] }}"
+      placeholder="P. Sherman, calle Wallaby, 42, Sydney" onchange="getLatLngAndRefreshMap()">
+    <small class="text-muted">Al hacer un click fuera, si todo ha ido bien, se actualizará el mapa</small>
+    </div>
+    <div id="mapWithMarker" class="form-group col-md-6" style="background-repeat: no-repeat; height:150px; background-image: url('https://maps.googleapis.com/maps/api/staticmap?center={{ store_info['lat'] or 0 }},{{ store_info['lng'] or 0}}&zoom=17&size=350x150&maptype=roadmap&markers={{ store_info['lat'] or 0}},{{ store_info['lng'] or 0}}&key=AIzaSyBhg2-Xkv5u9elauvCJWPih6TK_1g0zLgM')">
+  </div>
+  </div>
+
+  <div class="form-row">
+    <label for="schedules">Horario</label>
+    <textarea class="form-control" name="schedules" id="schedules" rows="1"
+      placeholder="De lunes a viernes de 8:00h a 22:00h. Los domingos solo abrimos si hace mal tiempo.">{{ store_info['schedules'] }}</textarea>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-6">
+      <label for="web_page">Página web principal</label>
+      <input class="form-control" type="text" id="web_page" name="web_page" value="{{ store_info['web_page'] }}"
+        placeholder="www.miotraweb.com">
+      <small id="web_pageHelp" class="form-text text-muted">Puede ser tu página de Facebook o Instagram</small>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="mail">Dirección de correo</label>
+      <input type="email" class="form-control" name="mail" id="mail" placeholder="micorreo@miotraweb.com"
+        value="{{ store_info['mail'] }}">
+      <small id="mailHelp" class="form-text text-muted">Introduce un correo, puede ser distinto del de registro</small>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <div class="form-group col-md-2">
+      <label for="phone_country_prefix">Prefijo</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">+</div>
+        </div>
+        <input type="number" class="form-control" id="phone_country_prefix" name="phone_country_prefix"
+          value="{{ store_info['phone_country_prefix'] or 34 }}">
+      </div>
+      <small id="phone_country_prefixHelp" class="form-text text-muted"><a href="https://countrycode.org/"
+          target="_blank">Guia de prefijos</a></small>
+    </div>
+    <div class="form-group col-md-6">
+      <label for="phone">Telefono de contacto</label>
+      <input type="tel" id="phone" name="phone" placeholder="Introduce un teléfono" class="form-control"
+        value="{{ store_info['phone'] }}">
+      <small id="mailHelp" class="form-text text-muted">Introduce un correo, puede ser distinto del de registro</small>
+    </div>
+
+    <div class="form-group col-md-4 align-items-center">
+      <label for="has_whatsapp">El teléfono introducido tiene Whatsapp</label>
+      <div class="form-check">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="has_whatsapp" id="has_whatsapp" value="1">
+          <label class="form-check-label" for="has_whatsapp">Si</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="has_whatsapp" id="not_has_whatsapp" value="0" checked>
+          <label class="form-check-label" for="has_whatsapp">No</label>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-row">
+    <label for="Services">Servicios</label>
+    <div class="form-check">
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="1" id="has_delivery" name="has_delivery">
+        <label class="form-check-label" for="has_delivery">
+          Ofrezco servicio a domicilio
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="1" id="has_take_away" name="has_take_away">
+        <label class="form-check-label" for="has_take_away">
+          Los usuarios pueden hacer pedidos y recogerlos en tienda
+        </label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" value="1" id="has_online_store" name="has_online_store">
+        <label class="form-check-label" for="has_online_store">
+          Los usuarios pueden comprar productos en tu tienda online
+        </label>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="form-row">
+    <div class="form-group col-md-12">
+      <label for="primary_action">¿Que funcionalidad deseas destacar en tu página de tienda?</label>
+      <select class="form-control" type="text" id="primary_action" name="primary_action"
+        value="{{ store_info['primary_action'] }}"
+        placeholder="Elige la funcionalidad a la que dirigirá el botón principal de tu página">
+        <option value="catalog">[ Ver catálogo ] Botón que dirige a una página autogenerada con tus productos en formato
+          catálogo, ideal si eres una tienda</option>
+        <option value="menu">[ Ver carta / Menú ] Botón que dirige a una página autogenerada con los productos en
+          formato carta, ideal si eres un restaurante</option>
+        <option value="website">[ Ver tienda online ] Botón dirige a tu página web principal, ideal si ya tienes tu
+          propia tienda online</option>
+      </select>
+      <small>Puedes cambiar las veces que quieras de uno a otro y ver cual funciona mejor! - <a href="#">Ver
+          ejemplos</a></small>
+    </div>
+  </div>
+
+  <input name="category_code_name" id="category_code_name" value="{{ store_info['category_code_name'] }}" hidden>
+  <input name="store_id" id="store_id" value="{{ store_info['id'] }}" hidden>
+  <input name="lat" id="lat" value="{{ store_info['lat'] }}" hidden>
+  <input name="lng" id="lng" value="{{ store_info['lng'] }}" hidden>
+  {% if store_info %}
+
+  <button type="submit" class="btn btn-success">
+    Guardar cambios</button>
+  {% else %}
+  <button type="submit" class="btn btn-success">
+    Confirmar y crear tienda</button>
+  {% endif %}
+
+</form>
+
+
+<button id="hiddenButtonForLoader" type="button" class="btn btn-primary" data-toggle="modal"
+  data-target="#staticBackdrop" hidden></button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Guardando tienda</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <p>
+            Genial! Se está creando tu primera tienda 🎉
+          </p>
+          <p>
+            Gracias por confiar en Local Market! 😊💚
+          </p>
+          <div class="spinner-border" role="status">
+            <span class="sr-only">Loading...</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p>
+          La creación puede tardar un poco, estamos subiendo las imágenes a nuestro servidor. 📡
+        </p>
+        <p>Gracias por la paciencia!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Set state for all form fields
+  var is_group = ('{{ store_info['is_group'] }}' == 'True');
+  if (is_group) {
+    document.getElementById('is_group').setAttribute('checked', '')
+  }
+  var has_delivery = ('{{ store_info['has_delivery'] }}' == 'True');
+  if (has_delivery) {
+    document.getElementById('has_delivery').setAttribute('checked', '')
+  }
+  var has_take_away = ('{{ store_info['has_take_away'] }}' == 'True');
+  if (has_take_away) {
+    document.getElementById('has_take_away').setAttribute('checked', '')
+  }
+  var has_online_store = ('{{ store_info['has_online_store'] }}' == 'True');
+  if (has_online_store) {
+    document.getElementById('has_online_store').setAttribute('checked', '')
+  }
+  var has_whatsapp = ('{{ store_info['has_whatsapp'] }}' == 'True');
+  if (has_whatsapp) {
+    document.getElementById('has_whatsapp').setAttribute('checked', '')
+    document.getElementById('not_has_whatsapp').removeAttribute('checked')
+  }
+  else if (!has_whatsapp) {
+    document.getElementById('not_has_whatsapp').setAttribute('checked', '')
+    document.getElementById('has_whatsapp').removeAttribute('checked')
+  }
+
+  document.getElementById("primary_color").defaultValue = '{{ store_info['primary_color'] }}'
+
+  // Autocomplete for store category
+  let dropdown = document.getElementById('category_name');
+  dropdown.length = 0;
+
+  let defaultOption = document.createElement('option');
+  defaultOption.text = '{{ store_info['category_code_name'] }}';
+
+  dropdown.add(defaultOption);
+  dropdown.selectedIndex = 0;
+
+  const url = 'https://static.html.almarcat.com/mvp/configs/categories.json';
+
+  fetch(url)
+    .then(
+      function (response) {
+        if (response.status !== 200) {
+          console.warn('Looks like there was a problem. Status Code: ' +
+            response.status);
+          return;
+        }
+
+        // Examine the text in the response  
+        response.json().then(function (data) {
+          let option;
+
+          for (let i = 0; i < data.length; i++) {
+            option = document.createElement('option');
+            option.text = data[i].name;
+            option.value = data[i].id;
+            dropdown.add(option);
+          }
+        });
+      }
+    )
+    .catch(function (err) {
+      console.error('Fetch Error -', err);
+    });
+
+function getLatLngAndRefreshMap(){
+  fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + document.getElementById('adress').value + '&key=AIzaSyBhg2-Xkv5u9elauvCJWPih6TK_1g0zLgM')
+  .then(response => response.json())
+  .then(function(data){
+    console.log(data['results'][0]['geometry']['location']['lat'])
+    lat = data['results'][0]['geometry']['location']['lat']
+    lng = data['results'][0]['geometry']['location']['lng']
+    document.getElementById('lat').value = lat
+    document.getElementById('lng').value = lng
+    document.getElementById('mapWithMarker').style.backgroundImage = "url(" + `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=17&size=350x150&maptype=roadmap&markers=${lat},${lng}&key=AIzaSyBhg2-Xkv5u9elauvCJWPih6TK_1g0zLgM` + ")"
+
+  });
+}
+</script>

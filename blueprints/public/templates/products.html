@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'components/basics/head.html' %}
+</head>
+
+<body>
+    <!-- Fixed navbar -->
+    {% include 'components/basics/nav.html' %}
+    <section class="features-icons bg-white text-center">
+        <div class="container">
+            <div class="row">
+
+
+                <div class="col-lg-12">
+                    {% if products %}
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">{{ products[0]['product_type_name'] }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row justify-content-center">
+                                <div class="">
+                                    <div class="cart-container">
+                                        <div class="cart-head">
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Nom</th>
+                                                            <th scope="col">Foto</th>
+                                                            <th scope="col">Productor</th>
+                                                            <th scope="col">Preu</th>
+                                                        </tr>
+                                                    </thead>
+
+                                                    <tbody>
+                                                        {% for product in products %}
+
+                                                        <tr>
+                                                            <td scope="row">{{ product.title }} </td>
+                                                            <td><img src="{{ product.images[0] }}" class="img-fluid"
+                                                                    width="35" alt="product"></td>
+                                                            <td scope="row"><a
+                                                                    href="/store/{{ product.external_store_info.code_name }}">
+                                                                    {{ product.external_store_info.name }}</a> </td>
+                                                            <td><span>{{ product['price_now'] }}</span> € <small>/{{
+                                                                    product['price_unit'] }}</small></td>
+                                                        </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="card align-items-center bg-light border-primary">
+                        <div class="card-body">
+                            No hi ha resultats per a la cerca, comparteix la iniciativa per a que hi hagi més stock.
+                            <a href="/catalog" class="card-link">Tornar</a>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+    </section>
+
+
+    <!-- Footer -->
+    {% include 'components/basics/footer.html' %}
+
+</body>
+
+</html>

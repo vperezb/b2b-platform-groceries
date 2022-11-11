@@ -1,0 +1,9 @@
+dispatch:
+  - url: "almarcat-sandbox-projects.appspot.com/*"
+    service: prod
+  - url: "dev-dot-almarcat-sandbox-projects.appspot.com/*"
+    service: dev
+  - url: "my.almarcat.com/*"
+    service: local
+  - url: "local.market.almarcat.com/*"
+    service: dev-local

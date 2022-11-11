@@ -1,0 +1,60 @@
+<div class="btn-group" role="group" aria-label="Basic example">
+    <button type="button" class="btn btn-success btn-sm"
+        onclick="window.location.href = '{{ url_for('admin.manage_item_page') }}?store_code_name={{my_store['code_name']}}'">
+        Añadir producto
+    </button>
+    <button type="button" class="btn btn-info btn-sm" data-toggle="modal" data-target="#createFromUrlModal">
+        Añadir producto desde web, Instagram o Facebook 🚀
+    </button>
+</div>
+
+
+
+
+<div class="modal fade" id="createFromUrlModal" tabindex="-1" role="dialog" aria-labelledby="createFromUrlModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <!-- <div class="modal-header">
+                <h5 class="modal-title" id="createFromUrlModalLabel">Introduce la url de tu página de producto o post</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true"></span>
+                </button>
+            </div> -->
+            <div class="modal-body">
+                <form id="create_item" method="post" action="{{ url_for('admin.manage_item_page') }}" enctype=multipart/form-data>
+                    <div class="form-group">
+                        <label for="recipient-name" name="product_url" class="col-form-label">Url:</label>
+                        <input type="url" class="form-control" id="recipient-name" name="product_url" placeholder="Pega aqui la url del producto de tu web" required>
+                        <small>También puedes utilizar la url de tus posts de Instagram o Facebook. <a href="https://docs.google.com/presentation/d/1u_ajecigig1I6U-Nw4_PqIDqyWcjpdErUWkuhURZkc4/mobilepresent">Ayuda</a></small>
+                    </div>
+                    <input name="store_code_name" value="{{my_store['code_name']}}" hidden>
+                    <button id="createProductSubmitButton" type="submit" class="btn btn-success" hidden>Crear producto</button>
+                </form>
+                <div class="alert alert-info" role="alert">
+                    <p>Usamos los metatags de tu página web para extraer la información. Si tu web no tiene metatags tendras que añadir los productos manualmente.</p>
+                    <p><small>Pregúnta a tu técnico de confianza o sigue este <a href="https://ogp.me/" target="_blank">link para saber más sobre los metatags</a></small></p>  
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" onclick="sendToCreateForm()" class="btn btn-success">Añadir y revisar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+
+function sendToCreateForm() {
+    document.getElementById("createProductSubmitButton").click(); // Click on the checkbox
+  }
+
+// function createProductFromUrl(url){
+//     var xhr = new XMLHttpRequest();
+//     xhr.open("POST", "{{ url_for('admin.manage_item_page') }}", true);
+//     xhr.setRequestHeader('Content-Type', 'application/json');
+//     response = xhr.send(JSON.stringify({"product_url":"https://waiwaistore.com/products/acondicionador-de-pelo-karite"}));
+//     return response
+// }
+</script>

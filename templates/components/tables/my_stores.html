@@ -1,0 +1,30 @@
+<table class="table table-striped" style="width: 100%;">
+  <thead class="">
+    <tr>
+      <th scope="col">Imagen</th>
+      <th scope="col">Nombre</th>
+      <th scope="col">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for store in my_stores %}
+    <tr>
+      <td><img src="{{ store['profile_image'] }}" style="max-width: 50px; max-height: 50px;" class="rounded-circle">
+      </td>
+      <td>{{ store['name'] }}</td>
+      <td>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-light"
+            onclick="window.location.href = '{{ url_for('public.store', store_code_name=store['code_name']) }}'"><i
+              class="fa fa-eye" aria-hidden="true"></i>
+          </button>
+          <button type="button" class="btn btn-light"
+            onclick="window.location.href = '{{ url_for('admin.my_store') }}?store={{ store['code_name'] }}'"><i
+              class="fa fa-cog" aria-hidden="true"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>

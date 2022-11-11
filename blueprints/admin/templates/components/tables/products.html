@@ -1,0 +1,74 @@
+{% if my_items %}
+<table class="table table-striped" style="width: 100%;">
+  <thead class="">
+    <tr>
+      <th scope="col">Imagen</th>
+      <th scope="col">Título</th>
+      <th scope="col">Categoría</th>
+      <th scope="col">Precio actual</th>
+      <th scope="col">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in my_items %}
+    <tr {% if item['is_enabled'] == false %} style="text-decoration: line-through;" {% endif %}>
+      <td><img src="{{ item['image'] or item['images'][0]}}" style="max-width: 40px; max-height: 40px;"></td>
+      <td>
+        {% if item['is_enabled'] == false %} <span class="badge badge-warning"><i class="fa fa-eye-slash"></i></span>
+        {% endif %}
+        {{ item['title']|truncate(60) }}</td>
+      <td>{{ item['category'] }}</td>
+      <td>{{ item['price_now'] }}</td>
+      <td>
+        <div class="btn-group" role="group" aria-label="Basic example">
+          <button type="button" class="btn btn-light" data-toggle="tooltip" data-placement="top" title="Editar producto"
+            onclick="window.location.href = '{{ url_for('admin.manage_item_page') }}?store_code_name={{my_store['code_name']}}&i={{ item['id'] }}&method=edit'"><i
+              class="fa fa-edit"></i></button>
+          <button type="button" class="btn btn-light" data-toggle="tooltip" data-placement="top"
+            title="Crear una copia del producto"
+            onclick="window.location.href = '{{ url_for('admin.manage_item_page') }}?store_code_name={{my_store['code_name']}}&i={{ item['id'] }}&method=copy'"><i
+              class="fa fa-clone"></i></button>
+          <!-- <button type="button" class="btn btn-light" data-toggle="modal" data-target="#deleteItemModal"
+            data-itemid="{{ item['id'] }}"><i class="fa fa-trash-o"></i></button> -->
+        </div>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endif %}
+
+<script>
+  $('#deleteItemModal').on('show.bs.modal', function (event) {
+    console.log('ssss')
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var recipient = button.data('itemid') // Extract info from data-* attributes
+    // If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
+    // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+    var modal = $(this)
+    modal.find('#confirm_delete').attr("onclick", "window.location.href = '{{ url_for('admin.manage_item_page') }}?store_code_name={{my_store['code_name']}}&i=" + recipient + "&method=delete'");
+  })
+</script>
+
+<!-- Modal -->
+<div class="modal fade" id="deleteItemModal" tabindex="-1" role="dialog" aria-labelledby="deleteItemModalLabel"
+  aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="deleteItemModalLabel">Eliminar producto</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true"></span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Estás seguro que quieres eliminar el producto?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">No, cancelar</button>
+        <button id="confirm_delete" type="button" class="btn btn-danger" onclick="">Si,
+          eliminar producto</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'components/basics/head.html' %}
+
+    <!-- Leaflet -->
+    <link rel="stylesheet" href="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.css" />
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        html, body, #map {
+            height: 100%;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation-->
+    {% include 'components/basics/nav.html' %}
+    <!-- Icons Grid-->
+    <div id="map"></div>
+
+    <script src="https://d19vzq90twjlae.cloudfront.net/leaflet-0.7/leaflet.js">
+    </script>
+
+    <script>
+        var map = L.map('map').setView([41.531552, 2.4319721], 12);
+        {% for store in stores if store.type == 'producer' %}
+
+        var marker = L.marker([{{ store.lat }},{{ store.lng }}]).addTo(map).bindPopup("<b>{{store.name}}</b><br/><a href='/store/{{store.code_name}}'>Ves-hi</a>");
+
+        {% endfor %}
+        
+        mapLink =
+            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+        L.tileLayer(
+            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; ' + mapLink + ' Contributors',
+            maxZoom: 18,
+        }).addTo(map);
+    </script>
+    {% include 'components/basics/footer.html' %}
+</body>
+
+</html>

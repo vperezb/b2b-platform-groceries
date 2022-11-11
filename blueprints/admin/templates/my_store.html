@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'components/basics/head.html' %}
+</head>
+
+<body>
+    <!-- Fixed navbar -->
+    {% include 'components/basics/nav.html' %}
+    <section class="features-icons bg-white text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center"> <img src="{{ my_store.profile_image }}"
+                                    alt="Admin" class="rounded p-1 bg-white img-thumbnail" width="110">
+                                <div class="mt-3">
+                                    <h4>{{ my_store.name }}</h4>
+                                    <p class="text-secondary mb-1">{{ my_store.headline }}</p>
+                                    <p class="text-muted font-size-sm">{{ my_store.locality }}</p>
+                                    <button class="btn btn-outline-primary"
+                                        onclick="window.location.href= 'manage_store?store_code_name={{my_store['code_name']}}&method=edit'"><i
+                                            class="fa fa-edit" aria-hidden="true"></i> Edita informació
+                                    </button>
+                                    <!-- <button class="btn btn-outline-primary">Message</button> -->
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <div class="btn-group-vertical">
+                                <button type="button" class="btn btn-secondary"
+                                    onclick="window.location.href= '/admin/my_orders'">Comandes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-10">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Els meus productes</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row justify-content-center">
+                                <div class="">
+                                    <div class="cart-container">
+                                        {% if my_items %}
+                                        <div class="cart-head">
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless">
+                                                    <thead>
+                                                        <tr>
+
+                                                            <th scope="col">Imatge</th>
+                                                            <th scope="col">Producte</th>
+                                                            <th scope="col">Productor</th>
+                                                            <th scope="col">Preu</th>
+                                                            <th scope="col">Accions</th>
+                                                            <th scope="col">Estat</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for item in my_items %}
+                                                        <tr>
+                                                            <td><img src="{{ item['image'] or item['images'][0]}}"
+                                                                    class="img-fluid" width="35" alt="product"></td>
+                                                            <td>
+                                                                {{ item['title']|truncate(60) }}</td>
+                                                            <td>
+                                                                {% if item['producer'] == 'Producte propi' %} <span
+                                                                    class="badge bg-info">{{ item['producer']
+                                                                    }}</span>
+                                                                {% else %}{{ item['producer'] }}
+                                                                {% endif %} </td>
+                                                            <td>{{ item['price_now'] }} € <small>/{{ item['price_unit']
+                                                                    }}</small></td>
+                                                            <td>
+                                                                <form id="{{ loop.index }}" class="form-inline"
+                                                                    method="post"
+                                                                    action="{{ url_for('admin.change_item_enabled', store_code_name=my_store['code_name']) }}">
+
+                                                                    <button type="button" class="btn btn-light"
+                                                                        onclick="window.location.href = '{{ url_for('admin.manage_item_page') }}?store_code_name={{my_store['code_name']}}&i={{ item['id'] }}&method=edit'">Edita</button>
+
+                                                            </td>
+                                                            <td>
+                                                                    <input type="checkbox"
+                                                                        onchange="this.form.submit();"
+                                                                        class="custom-control-input"
+                                                                        id="{{ item['id'] }}" name="is_enabled" {% if
+                                                                        item['is_enabled'] %} checked {% endif %}>
+
+                                                                    {% if item['is_enabled'] == false %} <span
+                                                                        class="badge bg-warning text-dark">Desactivat</span>
+                                                                    {% else %}
+                                                                    <span
+                                                                        class="badge bg-success">Activat</span>
+                                                                    {% endif %}
+
+                                                                    <input type="hidden" name="item_id"
+                                                                        value="{{ item['id'] }}" />
+                                                                    <input type="hidden" name="store_code_name"
+                                                                        value="{{ my_store['code_name'] }}" />
+
+                                                                </form>
+
+
+
+
+
+
+                                                            </td>
+                                                        </tr>
+                                                        {% endfor %}
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        {% endif %}
+
+                                        <div class="cart-footer text-right">
+                                            <button type="button" class="btn btn-primary"
+                                                onclick="window.location.href = '{{ url_for('admin.manage_item_page') }}?store_code_name={{my_store['code_name']}}'">+
+                                                Afegir
+                                                producte</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </section>
+
+
+    <!-- Footer -->
+    {% include 'components/basics/footer.html' %}
+
+
+</body>
+
+</html>

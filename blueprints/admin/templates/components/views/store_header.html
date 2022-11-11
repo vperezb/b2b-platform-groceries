@@ -1,0 +1,58 @@
+<div class="row mt-2 pt-2">
+  <div class="col-sm-12">
+    <div class="card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-sm-2">
+            <img src="{{ my_store['profile_image'] }}" style="max-width: 100px; max-height: 100px;"
+              class="rounded-circle">
+          </div>
+          <div class="col-sm-7">
+            <h2>{{ my_store['name'] }}</h2>
+            <p><a
+                href="{{ my_store['web_page']}}{% raw %}?utm_source=almarcat_local_market&utm_medium=my_store_screen{% endraw %}">{{ my_store['web_page']}}</a>
+            </p>
+            <p class="text-muted">{{ my_store['schedules']}}</p>
+          </div>
+          <div class="col-sm-3">
+            <div class="btn-group-vertical" role="group" aria-label="Basic example">
+              <button type="button" class="btn btn-success"
+                onclick="window.open('{{ url_for('admin.qr', c=my_store['code_name']) }}');"><i class="fa fa-qrcode"
+                  aria-hidden="true"></i> Generar QR
+              </button>
+              <button id="buttonToMyStorePage" type="button" class="btn btn-light"
+                data-url="https://almarcat.almarcat.com{{ url_for('public.store', store_code_name=my_store['code_name']) }}"
+                onclick="window.open('{{ url_for('public.store', store_code_name=my_store['code_name']) }}');"><i
+                  class="fa fa-eye" aria-hidden="true"></i> Ver página
+              </button>
+              <button type="button" onClick="copyUrlToShare()" class="btn btn-light"><i class="fa fa-share"
+                  aria-hidden="true"></i> Compartir
+                página
+              </button>
+              <button type="button" class="btn btn-light"
+                onclick="window.location.href= 'manage_store?store_code_name={{my_store['code_name']}}&method=edit'"><i
+                  class="fa fa-edit" aria-hidden="true"></i> Editar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <small>Por ahora solamente se puede crear una tienda, para más info contactad <a
+        href="{% raw %}https://mail.google.com/mail/u/0/?view=cm&fs=1&to=victor.perez@almarcat.com&su=Más%20información%20tienda%20{% endraw %}{{ user_data['email'] }}{% raw %}&body=%0A%0AEscríbenos%20tus%20dudas%20aquí&tf=1{% endraw %}"
+        target="_blank">aqui</a>.</small>
+  </div>
+</div>
+
+<script>
+  function copyUrlToShare() {
+    var dummy = document.createElement('input'),
+      text = window.document.getElementById('buttonToMyStorePage').getAttribute('data-url') + '?utm_source=link_shared';
+    document.body.appendChild(dummy);
+    dummy.value = text;
+    dummy.select();
+    document.execCommand('copy');
+    document.body.removeChild(dummy);
+    alert('Url copiada al portapapeles!');
+  }
+</script>

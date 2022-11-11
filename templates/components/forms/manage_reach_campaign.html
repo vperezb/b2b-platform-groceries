@@ -1,0 +1,83 @@
+<form id="create_store" method="post" action="{{ url_for('admin.reach_campaign_engine') }}" enctype=multipart/form-data>
+    <input name="store_id" id="store_id" value="{{ store_info['id'] }}" hidden>
+    <input name="service_code_name" id="service_code_name" value="reach_campaign" hidden>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="price">Presupuesto total</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">€</div>
+                </div>
+                <input class="form-control" type="number" id="price" name="price" min="5" step="1"
+                    placeholder="" value="8" onchange="calculateFinalAmount()">
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="start_date">Fecha inicio</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Desde el día</div>
+                </div>
+                <input class="form-control" type="date" id="start_date" name="start_date" min="0" step="0.01"
+                    placeholder="0.00" value="getDatetime()">
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="end_date">Fecha fin</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Hasta alcanzar las visualizaciones contratadas.</div>
+                </div>
+            </div>
+            <!-- <small id="urlHelp" class="form-text text-muted">Este precio saldrá tachado junto al precio actual</small> -->
+        </div>
+    </div>
+
+    <div class="row mt-2 p-2">
+        <div class="col sm-12">
+
+            <div class="input-group">
+                <input name="coupon_code" id="couponCode" type="text" class="form-control" placeholder="Introduce tu código promocional" onchange="calculateFinalAmount()">
+                <div class="input-group-append">
+                    <button type="button" onclick="calculateFinalAmount()" class="btn btn-success">Usar código</button>
+                </div>
+            </div>
+
+            <small class="text-muted">
+                Puedes encontrar códigos en nuestro <a
+                    href="https://www.instagram.com/almarcat.almarcat/">Instagram</a> .
+                Corre que caducan!
+            </small>
+        </div>
+    </div>
+    <hr class="mb-4">
+    <div class="card">
+        <div class="card-body">
+            <b>Total a pagar: </b><span id="finalAmount">8</span>€ 
+            <button type="submit"
+                class="btn btn-success">Contratar servicio</button>
+        </div>
+    </div>
+    <input name="to_pay" id="to_pay" value="8" hidden>
+</form>
+
+<script>
+    function calculateFinalAmount() {
+        if (document.getElementById('couponCode').value == '') {
+            amountToPay = document.getElementById('price').value
+            document.getElementById('finalAmount').textContent = amountToPay
+            document.getElementById('to_pay').value = amountToPay
+        }
+        else if (document.getElementById('couponCode').value == 'BF2020') {
+            amountToPay = document.getElementById('price').value - 20
+            if (amountToPay < 0){
+                amountToPay = 0
+            }
+            document.getElementById('finalAmount').textContent = amountToPay
+            document.getElementById('to_pay').value = amountToPay
+        }
+        else {
+            alert('El código introducido no es válido, encuentra en nuestras redes sociales códigos promocionales')
+        }
+    }
+</script>

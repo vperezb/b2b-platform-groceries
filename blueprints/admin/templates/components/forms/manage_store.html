@@ -1,0 +1,225 @@
+{% if store_info %}
+<h2>Edita</h2>
+<script>
+  // On mouse-over, execute myFunction
+  function showLoader() {
+    document.getElementById("hiddenButtonForLoader").click(); // Click on the checkbox
+  }
+</script>
+{% else %}
+<h2>Nova botiga o productor</h2>
+<script>
+  // On mouse-over, execute myFunction
+  function showLoader() {
+    document.getElementById("hiddenButtonForLoader").click(); // Click on the checkbox
+  }
+</script>
+{% endif %}
+
+<form id="create_store" method="post" action="{{ url_for('admin.store_engine') }}" enctype=multipart/form-data
+  onsubmit="showLoader()">
+  <div class="row g-3">
+    {% if store_info %}
+    <input name="type" id="type" value="{{ store_info['type'] }}" hidden>
+    {% else %}
+
+    <div class="col-md-12">
+      <label for="type">Tipologia de compte</label>
+      <select class="form-control" name="type" required>
+        <option value="" selected disabled hidden>Escull la tipologia de compte</option>
+        <option value="producer">Productor</option>
+        <option value="store">Botiga</option>
+      </select>
+    </div>
+    {% endif %}
+
+    <!-- 12Block -->
+
+    <div class="col-md-6">
+      <label for="name">Nom complert de la botiga o productor</label>
+      <input class="form-control" type="text" id="name" name="name" value="{{ store_info['name'] }}"
+        placeholder="El meu hort" required>
+    </div>
+
+    <div class="col-md-6">
+      <label for="code_name">Nom per compartir</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">@</div>
+        </div>
+        <input title="Sólo puede contener letras, números y _ - " name="code_name" id="code_name" type="text"
+          class="form-control" placeholder="el_meu_hort" pattern="^[A-Za-z0-9_-]{3,25}$"
+          value="{{ store_info['code_name'] }}" required>
+      </div>
+      <small class="form-text text-muted">Lletres, numeros i _ - </small>
+    </div>
+    <!-- 12Block -->
+
+    <div class="col-md-2">
+      <label for="profile_image_placeholder">Logo</label>
+      <img id="profile_image_placeholder" class="form-control-file"
+        src="{{ store_info['profile_image'] or 'https://img.utdstc.com/icons/almarcat-android.png:300' }}"
+        style="width: 50px;height: 50px;" alt="your image" name="profile_image_placeholder" />
+    </div>
+    <div class="col-md-4">
+      <label for="profile_image">Canvia imatge</label>
+      <input type="file" class="form-control-file" id="profile_image" name="profile_image">
+      <input type="text" id="profile_image_url" name="profile_image_url" value="{{ store_info['profile_image'] }}"
+        hidden>
+    </div>
+    <div class="col-md-6">
+      <label for="headline">Slogan</label>
+      <input class="form-control" type="text" id="headline" name="headline" value="{{ store_info['headline'] }}"
+        placeholder="Verdures de proximitat">
+    </div>
+    <!-- 12Block -->
+
+    <div class="col-md-12">
+      <label for="description">Descripció</label>
+      <textarea class="form-control" name="description" id="description" rows="4"
+        placeholder="">{{ store_info['description'] }}</textarea>
+      <small id="phone_country_prefixHelp" class="form-text text-muted">També pots afegir <a
+        href="https://emojipedia.org/" target="_blank">emojis</a></small>
+    </div>
+
+    <!-- 12Block -->
+
+    <div class="col-md-2">
+      <label for="phone_country_prefix">Prefixe</label>
+      <div class="input-group mb-2">
+        <div class="input-group-prepend">
+          <div class="input-group-text">+</div>
+        </div>
+        <input type="number" class="form-control" id="phone_country_prefix" name="phone_country_prefix"
+          value="{{ store_info['phone_country_prefix'] or 34 }}">
+      </div>
+      <small id="phone_country_prefixHelp" class="form-text text-muted"><a href="https://countrycode.org/"
+          target="_blank">Guia de prefixos</a></small>
+    </div>
+    <div class="col-md-6">
+      <label for="phone">Telèfon de contacte</label>
+      <input type="tel" id="phone" name="phone" placeholder="Introdueix el telèfon" class="form-control"
+        value="{{ store_info['phone'] }}">
+      
+    </div>
+
+    <div class="col-md-4">
+      <label for="has_whatsapp">El telèfon introduit té Whatsapp</label>
+      <div class="form-check">
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="has_whatsapp" id="has_whatsapp" value="1">
+          <label class="form-check-label" for="has_whatsapp">Si</label>
+        </div>
+        <div class="form-check form-check-inline">
+          <input class="form-check-input" type="radio" name="has_whatsapp" id="not_has_whatsapp" value="0" checked>
+          <label class="form-check-label" for="has_whatsapp">No</label>
+        </div>
+      </div>
+    </div>
+
+
+    <!-- 12Block -->
+
+    <div class="col-md-6">
+      <label for="adress">Adreça</label>
+      <input class="form-control" type="text" id="adress" name="adress" value="{{ store_info['adress'] }}"
+        placeholder="El meu carrer num 1, poble o ciutat" onchange="getLatLngAndRefreshMap()">
+      <small class="text-muted">Al fer click fora, s'actualizarà el mapa</small>
+    </div>
+    <div id="mapWithMarker" class="col-md-6"
+      style="background-repeat: no-repeat; height:150px; background-image: url('https://maps.googleapis.com/maps/api/staticmap?center={{ store_info['lat'] or 0 }},{{ store_info['lng'] or 0}}&zoom=17&size=350x150&maptype=roadmap&markers={{ store_info['lat'] or 0}},{{ store_info['lng'] or 0}}&key=AIzaSyBhg2-Xkv5u9elauvCJWPih6TK_1g0zLgM')">
+    </div>
+    <!-- 12Block -->
+    <div class="col-md-12">
+      <label for="schedules">Horari</label>
+      <textarea class="form-control" name="schedules" id="schedules" rows="1"
+        placeholder="De dilluns a divendres als matins">{{ store_info['schedules'] }}</textarea>
+    </div>
+    <!-- 12Block -->
+    <div class="col-md-6">
+      <label for="web_page">Pàgina web</label>
+      <input class="form-control" type="text" id="web_page" name="web_page" value="{{ store_info['web_page'] }}"
+        placeholder="www.lamevaweb.com">
+      <small id="web_pageHelp" class="form-text text-muted">Pot ser la teva xarxa social</small>
+    </div>
+    <div class="col-md-6">
+      <label for="mail">Adreça de correu</label>
+      <input type="email" class="form-control" name="mail" id="mail" placeholder="elmeucorreu@lamevaweb.com"
+        value="{{ store_info['mail'] }}">
+        <!-- <small id="mailHelp" class="form-text text-muted">Introdueix un correu de contacte</small> -->
+    </div>
+
+    <input name="store_id" id="store_id" value="{{ store_info['id'] }}" hidden>
+    <input name="lat" id="lat" value="{{ store_info['lat'] }}" hidden>
+    <input name="lng" id="lng" value="{{ store_info['lng'] }}" hidden>
+    {% if store_info %}
+
+    <button type="submit" class="btn btn-success">
+      Desa canvis</button>
+    {% else %}
+    <button type="submit" class="btn btn-success">
+      Confirma i crea perfil </button>
+    {% endif %}
+
+</form>
+
+
+<button id="hiddenButtonForLoader" type="button" class="btn btn-primary" data-toggle="modal"
+  data-target="#staticBackdrop" hidden></button>
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" tabindex="-1" role="dialog"
+  aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Guardando tienda</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="text-center">
+          <p>
+            Genial! Se está creando tu primera tienda 🎉
+          </p>
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <p>
+          La creación puede tardar un poco.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  // Set state for all form fields
+  var has_whatsapp = ('{{ store_info['has_whatsapp'] }}' == 'True');
+  if (has_whatsapp) {
+    document.getElementById('has_whatsapp').setAttribute('checked', '')
+    document.getElementById('not_has_whatsapp').removeAttribute('checked')
+  }
+  else if (!has_whatsapp) {
+    document.getElementById('not_has_whatsapp').setAttribute('checked', '')
+    document.getElementById('has_whatsapp').removeAttribute('checked')
+  }
+
+  function getLatLngAndRefreshMap() {
+    fetch('https://maps.googleapis.com/maps/api/geocode/json?address=' + document.getElementById('adress').value + '&key=AIzaSyBhg2-Xkv5u9elauvCJWPih6TK_1g0zLgM')
+      .then(response => response.json())
+      .then(function (data) {
+        console.log(data['results'][0]['geometry']['location']['lat'])
+        lat = data['results'][0]['geometry']['location']['lat']
+        lng = data['results'][0]['geometry']['location']['lng']
+        document.getElementById('lat').value = lat
+        document.getElementById('lng').value = lng
+        document.getElementById('mapWithMarker').style.backgroundImage = "url(" + `https://maps.googleapis.com/maps/api/staticmap?center=${lat},${lng}&zoom=17&size=350x150&maptype=roadmap&markers=${lat},${lng}&key=AIzaSyBhg2-Xkv5u9elauvCJWPih6TK_1g0zLgM` + ")"
+
+      });
+  }
+</script>

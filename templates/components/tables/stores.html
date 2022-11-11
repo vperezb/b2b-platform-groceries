@@ -1,0 +1,12 @@
+{% if stores %}
+<table class="table table-striped" style="width: 100%;">
+  <thead class="">
+    {% for store in stores %}
+    <tr style=" cursor: pointer;" onclick="window.open('{{ url_for('public.store', store_code_name=store['code_name']) }}')">
+      <td><img src="{{ store['profile_image'] }}" style="max-width: 50px; max-height: 50px;"></td>
+      <td>{{ store['name'] }}</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endif %}

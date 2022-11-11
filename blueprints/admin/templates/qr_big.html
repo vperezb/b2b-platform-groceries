@@ -1,0 +1,79 @@
+<!doctype html>
+<html>
+
+<head>
+    {% include 'components/basics/head.html' %}
+</head>
+
+
+
+<style>
+    @page {
+        margin: 0;
+    }
+
+    @media print {
+        #printPageButton {
+            display: none;
+        }
+    }
+</style>
+
+<html>
+
+
+<body>
+    {% include 'components/basics/body.html' %}
+    <div class="row pt-2">
+        <div class="col text-center">
+            <button id="printPageButton" class="btn btn-primary" onclick="window.print()">Imprimir</button>
+        </div>
+    </div>
+    <div class="container" id="main-content"></div>
+
+
+</html>
+
+<script>
+    var url_string = window.location.href
+    var url = new URL(url_string);
+    var c = url.searchParams.get("c");
+    fetch('/content_api/store/' + c + '/info')
+        .then(function (response) {
+            return response.json();
+        })
+        .then(function (myJson) {
+            var url_to_qr = 'https://almarcat.almarcat.com/store/' + myJson.code_name + '?utm_source=qr_code'
+            $('#main-content').prepend(`
+            <div class="row mt-2 pt-2">
+    <div class="col-sm-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-2">
+                        <img id="storeLogo" src="${myJson.profile_image}" style="max-width: 100px; max-height: 100px;"
+                            class="rounded-circle">
+                    </div>
+                    <div class="col-sm-7">
+                        <h2 id="storeName">${myJson.name}</h2>
+                        <p>${myJson.description}</p>
+                        <p class="text-muted">${myJson.schedules}</p>
+                    </div>
+                </div>
+                <div class="row pt-2">
+                    <div class="col sm-12">
+                        <img id='qr_placeholder' src='${'https://chart.googleapis.com/chart?cht=qr&chs=500x500&chl=' + url_to_qr}' class= "mx-auto d-block" ></img >
+                    </div >
+                </div >
+                <div class="row pt-2">
+                    <div class="col sm-12">
+                        <p class="text-muted"><small>Para poder leer el código QR, descarga una aplicación para ello en la PlayStore de Google si tienes Android o desde la Store de aplicaciones si tienes un iPhone. Busca "lector qr" y apareceran las distintas aplicaciones.</small></p>
+                    </div >
+                </div>
+            </div >
+        </div >
+    </div >
+</div >
+            `)
+        });
+</script>

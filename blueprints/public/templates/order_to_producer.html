@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'components/basics/head.html' %}
+</head>
+
+<body>
+    <!-- Fixed navbar -->
+    {% include 'components/basics/nav.html' %}
+    <section class="features-icons bg-white text-center">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <bold id='producer-or-distributor'></bold>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-flex flex-column align-items-center"> <img
+                                    src="{{ store_info.profile_image }}" alt="Admin"
+                                    class="rounded p-1 bg-white img-thumbnail" width="110">
+                                <div class="mt-3">
+                                    <h4>{{ store_info.name }}</h4>
+                                    <p class="text-secondary mb-1">{{ store_info.headline }}</p>
+                                    <p class="text-muted font-size-sm">{{ store_info.locality }}</p>
+                                    <!-- <button class="btn btn-outline-primary">Message</button> -->
+                                </div>
+                            </div>
+                            <hr class="my-4">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item d-flex justify-content-between align-items-center flex-wrap">
+                                    <h6 class="mb-0"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="feather feather-globe me-2 icon-inline">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <line x1="2" y1="12" x2="22" y2="12"></line>
+                                            <path
+                                                d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                                            </path>
+                                        </svg>Web</h6> <a href="{{ store_info.web_page }}"><span
+                                            class="text-secondary">{{
+                                            store_info.web_page }}</span></a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Comanda</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row justify-content-center">
+                                <div class="">
+                                    <div class="cart-container">
+                                        <form action="{{ url_for('admin.order_engine') }}" method="POST"
+                                            enctype=multipart/form-data>
+                                            <input name="ordered_to_store_id" id="ordered_to_store_id"
+                                                value="{{ store_info['id'] }}" hidden>
+                                            <input name="ordered_to_store_code_name" id="ordered_to_store_code_name"
+                                                value="{{ store_info['code_name'] }}" hidden>
+                                            <div class="cart-head">
+                                                <div class="table-responsive">
+                                                    <table class="table table-borderless">
+                                                        <thead>
+                                                            <tr>
+
+                                                                <th scope="col" class="d-none d-lg-table-cell">Photo</th>
+                                                                <th scope="col">Producte</th>
+                                                                <th scope="col" class="d-none d-lg-table-cell">Productor</th>
+                                                                <th scope="col">Qty</th>
+                                                                <th scope="col">Price</th>
+                                                                <th scope="col" class="text-right">Total</th>
+                                                            </tr>
+                                                        </thead>
+
+                                                        <tbody>
+                                                            {% for item in store_items %}
+
+                                                            <tr>
+
+                                                                <td class="d-none d-lg-table-cell"><img src="{{ item['image'] or item['images'][0]}}"
+                                                                        class="img-fluid" width="35" alt="product"></td>
+                                                                <td>{{ item['title']|truncate(60) }} <small>{% if item.qty %}({{ item.qty}} unitats){% endif %}</small></td>
+                                                                <td class="d-none d-lg-table-cell">{{ item.producer }}</td>
+                                                                <td>
+                                                                    <div class="form-group mb-0">
+                                                                        <input type="number"
+                                                                            class="form-control item-qty"
+                                                                            name="itemQty{{ item['id'] }}"
+                                                                            id="itemQty{{ item['id'] }}" value="0"
+                                                                            max="{{item.qty}}" min="0"
+                                                                            onchange="modifyTotalItem('{{ item['id'] }}')">
+                                                                    </div>
+                                                                </td>
+                                                                <td><span id="itemPrice{{ item['id'] }}">{{
+                                                                        item['price_now'] }}</span> € <small>/{{
+                                                                        item['price_unit'] }}</small></td>
+                                                                <td class="text-right"><span
+                                                                        id="itemTotal{{ item['id'] }}">0</span> €</td>
+                                                            </tr>
+                                                            {% endfor %}
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </div>
+                                            </br>
+                                            <div class="cart-body">
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <h4 class="float-right">Total : <span
+                                                                id="amount_to_pay_visible">0.00 </span>
+                                                            €</h4>
+                                                    </div>
+                                                </div>
+                                                </br>
+                                                <div class="row">
+                                                    <div class="col-md-12">
+                                                        <div class="order-note">
+                                                            <div class="row g-3">
+                                                                <div class="col md-6">
+                                                                    <label for="delivery_date" class="form-label">Data
+                                                                        desitjada de comanda</label>
+                                                                    <input type="date" class="form-control"
+                                                                        id="delivery_date"
+                                                                        aria-describedby="delivery_date"
+                                                                        name="delivery_date" required>
+                                                                    <div id="delivery_date" class="form-text">Així el
+                                                                        productor podrà organitzar la collita.</div>
+                                                                </div>
+                                                                <!-- <div class="col md-6">
+                                                                    <label for="inputState" class="form-label">Tipus
+                                                                        d'entrega desitjada</label>
+                                                                    <select id="inputState" class="form-select"
+                                                                        name="delivery_method" required>
+                                                                        <option value="pickup" selected>Recollida al
+                                                                            productor</option>
+                                                                        <option value="delivery">Amb enviament del
+                                                                            productor</option>
+                                                                    </select>
+                                                                </div> -->
+                                                            </div>
+                                                            <div class="mb-3">
+                                                                <label for="specialNotes">Nota al productor:</label>
+                                                                <textarea class="form-control" name="comment"
+                                                                    id="specialNotes" rows="5"
+                                                                    placeholder="Si tens qualsevol dubte o puntualització, escriu-la aqui."></textarea>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            <input name="amount_to_pay" id="amount_to_pay" value="0" hidden>
+                                            
+                                            <div class="cart-footer">
+                                                <button type="submit" class="btn btn-primary">Realitza
+                                                    comanda</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+    </section>
+
+    <script>
+        var order_to_put = {
+            'order_lines': [
+
+            ]
+        }
+
+        function modifyFormFieldAndAppendToOrderToPut(name) {
+            order_to_put[name] = document.getElementsByName(name)[0].value
+        }
+
+        function modifyTotalItem(item_id) {
+
+            order_to_put['order_lines'][item_id] = {
+                'qty': parseInt(document.getElementById('itemQty' + item_id).value),
+                'price': parseFloat(document.getElementById('itemPrice' + item_id).innerHTML),
+                'total': 0.0
+            }
+
+            order_to_put['order_lines'][item_id]['total'] = order_to_put['order_lines'][item_id]['qty'] * order_to_put['order_lines'][item_id]['price']
+
+            document.getElementById('itemTotal' + item_id).innerHTML = (order_to_put['order_lines'][item_id]['total']).toFixed(2)
+
+            var partial_amount_to_pay = 0
+
+            for (const [key, value] of Object.entries(order_to_put['order_lines'])) {
+                partial_amount_to_pay += order_to_put['order_lines'][key]['total']
+            }
+
+            order_to_put['amount_to_pay'] = partial_amount_to_pay
+
+            document.getElementById('amount_to_pay').value = partial_amount_to_pay.toFixed(2)
+            document.getElementById('amount_to_pay_visible').innerHTML = partial_amount_to_pay.toFixed(2)
+        }
+
+
+
+        var translations = {
+            'producer': "Productor",
+            'store': "Botiga",
+            'unit': 'unitat',
+            'bunch': 'manat',
+            'kg': 'kg'
+        };
+
+        window.onload = function () {
+            document.getElementById('producer-or-distributor').innerHTML = translations['{{ store_info.type }}'];
+            // document.getElementsByClassName('producer-or-distributor').innerHTML = translations['{{ store_info.type }}'];
+        };
+
+    </script>
+
+
+
+    <!-- Footer -->
+    {% include 'components/basics/footer.html' %}
+
+</body>
+
+</html>

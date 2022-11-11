@@ -1,0 +1,237 @@
+<!-- SANDBOX -->
+<!-- <script 
+    src="https://www.paypal.com/sdk/js?client-id=AZvbXT1V4F17HqlnoeAHdH3mFkUDKeV52Ogd05Ds1R3rYl56xkWhCB05rXyn1ykelAVzW3pugi12MJIZ&currency=EUR&intent=capture"> 
+</script> -->
+
+<!-- PRODUCTION -->
+<script 
+    src="https://www.paypal.com/sdk/js?client-id=AdATMCxoB9hA0QRng6OZAlbtopo-nZ3A1YXDoD7E-wqBiN_VcB2U-VUPS-fgOcI-oct9aWGveblWSZMm&currency=EUR&intent=capture"> 
+</script>
+
+
+<form id="create_hyperlocal_campaign" method="post" action="{{ url_for('admin.hyperlocal_campaign_engine') }}"
+    enctype=multipart/form-data>
+
+    <input name="store_id" id="store_id" value="{{ store_info['id'] }}" hidden>
+    <input name="service_code_name" id="service_code_name" value="hyperlocal_campaign" hidden>
+    <div class="form-row pt-4">
+        <div class="form-group col-md-6">
+            <label for="name">Nombre de la campaña</label>
+            <input title="Sólo puede contener letras, números y _ - " pattern="^[A-Za-z0-9_-]{3,25}$"
+                class="form-control" type="text" id="campaign_code" name="campaign_code" placeholder="nombre_para_acordarme_1" value="mi_primera_campana"
+                >
+        </div>
+        <div class="form-group col-md-6">
+            <label for="distance">Distancia desde tu tienda</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Km</div>
+                </div>
+                <input class="form-control" type="number" id="distance" name="distance" min="1" step="1" placeholder="5"
+                    value="5">
+            </div>
+            <small id="urlHelp" class="form-text text-muted">Los anuncios se mostrarán a usuarios cercanos a tu tienda,
+                la máxima distancia será la indicada.</small>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="name">Destino del anuncio</label>
+            <input title="" class="form-control" pattern="https://.*" type="url" id="url" name="url" placeholder="url"
+                value="https://almarcat.almarcat.com{{ url_for('public.store', store_code_name= request.args.get('c'))}}"
+                >
+        </div>
+        <!-- <div class="form-group col-md-6">
+            <label for="distance">Distancia desde tu tienda</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Km</div>
+                </div>
+                <input class="form-control" type="number" id="distance" name="distance" min="1" step="1" placeholder="5"
+                    value="5">
+            </div>
+            <small id="urlHelp" class="form-text text-muted">Los anuncios se mostrarán a usuarios cercanos a tu tienda,
+                la máxima distancia será la indicada.</small>
+        </div> -->
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-4">
+            <label for="price">Presupuesto total</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">€</div>
+                </div>
+                <input class="form-control" type="number" id="price" name="price" min="100" step="1" placeholder="100"
+                    value="100" onchange="calculateFinalAmount()">
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="start_date">Fecha inicio</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Desde el día</div>
+                </div>
+                <input class="form-control" type="date" id="start_date" name="start_date" min="0" step="0.01"
+                    placeholder="0.00" value="getDatetime()">
+            </div>
+        </div>
+        <div class="form-group col-md-4">
+            <label for="end_date">Fecha fin</label>
+            <div class="input-group mb-2">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">Hasta el día</div>
+                </div>
+                <input class="form-control" type="date" id="end_date" name="end_date" min="0" step="0.01"
+                    placeholder="0.00" value="">
+            </div>
+            <!-- <small id="urlHelp" class="form-text text-muted">Este precio saldrá tachado junto al precio actual</small> -->
+        </div>
+    </div>
+
+    <p>Se va a repartir el presupuesto uniformemente durante todos los días de la campaña.</p>
+
+    <div class="row pb-5">
+        <div class="col sm-12">
+            <div class="input-group">
+                <input name="coupon_code" id="couponCode" type="text" class="form-control"
+                    placeholder="Introduce tu código promocional" onchange="calculateFinalAmount()">
+                <div class="input-group-append">
+                    <button type="button" onclick="calculateFinalAmount()" class="btn btn-success">Usar código</button>
+                </div>
+            </div>
+
+            <small class="text-muted">
+                Puedes encontrar códigos en nuestro <a
+                    href="https://www.instagram.com/almarcat.almarcat/">Instagram</a> .
+                Corre que caducan!
+            </small>
+        </div>
+    </div>
+
+    <h2>Resumen:</h2>
+
+    <div class="row alert alert-info">
+        <div class="col sm-6">
+            <ul>
+                <li>Se van a publicar anuncios en medios y aplicaciones que van a dirigir a la página indicada.</li>
+                <!-- <li>Visitas extra a tu página gracias al anuncio: Entre <b>200 y 250</b></li>
+                <li>Coste aproximado por día <span>2.5</span> €/día</li>
+                <li>Página a promocionar <a href="{{ url_for('public.store', store_code_name= request.args.get('c'))}}"
+                        target="_blank"><span>https://almarcat.almarcat.com{{ url_for('public.store', store_code_name= request.args.get('c'))}}</span></a></li> -->
+                <li>Aspecto de los anuncios ver <a href="{{ url_for('public.banner')}}" target="_blank">aquí</a></li>
+                <li>Podrás ver los resultados en el apartado <a href="{{ url_for('admin.stats') }}"
+                        target="_blank">estadísticas</a>, bajo el origen <b>hyperlocal_campaign</b> </li>
+                <hr>
+                <strong>Total a pagar <span id="finalAmount">100</span> €</strong>
+            </ul>
+        </div>
+    </div>
+
+
+    <div class="row alert pt-4">
+        <button type="submit" class="btn btn-success" hidden>
+            Proceder al pago</button>
+        <input name="to_pay" id="to_pay" value="100" hidden>
+        <input name="status_color" id="status_color" value="success" hidden>
+        <input name="paypal_order_id" id="paypal_order_id" value="" hidden>
+        <input name="status_text" id="status_text" value="Validado. Pendiente de iniciar." hidden>
+        <input name="comments" id="comments" value="Pago validado." hidden>
+    </div>
+    
+    
+    <h2>Proceder al pago:</h2>
+    
+  
+    <div class="row alert pt-4">
+        <div id="paypal-button-container"></div>  
+    </div>
+      <!-- PAYPAL BUTTON https://developer.paypal.com/docs/checkout/integrate -->
+      <script>
+          
+          paypal.Buttons({
+              style: {
+                  color: 'white',
+                  layout: 'vertical',
+                  label: 'paypal'
+              },
+              createOrder: function(data, actions) {
+                    try {
+                        return fetch('/admin/api/paypal/{{ request.args.get('c') }}/order/create', {
+                            method: 'post',
+                            headers: new Headers({
+                                "content-type": "application/json"
+                                }),
+                            body: JSON.stringify(getPaypalItem())
+                        }).then(function(res) {
+                            return res.json();
+                        }).then(function(data) {
+                            document.getElementById('paypal_order_id').value = data.orderID;
+                            return data.orderID;
+                        });
+                    }
+                    catch (err){
+                        document.getElementById('status_color').value = "danger";
+                        document.getElementById('status_text').value = "Error Paypal";
+                        document.getElementById('comments').value = "Revisaremos manualmente esta petición";
+                    }
+                    },
+             // Finalize the transaction
+             onApprove: function(data, actions) {
+                    try {
+                        return fetch('/admin/api/paypal/{{ request.args.get('c') }}/order/' + data.orderID + '/capture', {
+                            method: 'post'
+                        }).then(function(res) {                
+                            console.log(res);
+                            document.getElementById('create_hyperlocal_campaign').submit();                                                     
+                        });
+                    }
+                    catch (err){
+                        document.getElementById('status_color').value = "danger";
+                        document.getElementById('status_text').value = "Error Paypal";
+                        document.getElementById('comments').value =  "Revisaremos manualmente esta petición";
+                    }
+                    },   
+
+          }).render('#paypal-button-container');
+          //This function displays Smart Payment Buttons on your web page.
+
+          function getPaypalItem() {
+            let item =
+                    {
+                        "currency_code": "EUR",
+                        "amount_value": document.getElementById('to_pay').value, 
+                        "description": document.getElementById("campaign_code").value,
+                        "reference_id": 1,
+                        "custom_id": 1,
+                        "quantity": 1
+                    };
+          
+          console.log(item);
+          return item; 
+      }
+          </script>
+      <!-- END PAYPAL BUTTON-->
+</form>
+
+<script>
+    function calculateFinalAmount() {
+        if (document.getElementById('couponCode').value == '') {
+            amountToPay = document.getElementById('price').value
+            document.getElementById('finalAmount').textContent = amountToPay
+            document.getElementById('to_pay').value = amountToPay
+        }
+        else if (document.getElementById('couponCode').value == 'BF2020') {
+            amountToPay = document.getElementById('price').value - 20
+            document.getElementById('finalAmount').textContent = amountToPay
+            document.getElementById('to_pay').value = amountToPay
+        }
+        else if (document.getElementById('couponCode').value == 'LM2020') {
+            amountToPay = document.getElementById('price').value - 50
+            document.getElementById('finalAmount').textContent = amountToPay
+            document.getElementById('to_pay').value = amountToPay
+        }
+        else {
+            alert('El código introducido no es válido, encuentra en nuestras redes sociales códigos promocionales')
+        }
+    }
+</script>

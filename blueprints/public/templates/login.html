@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% include 'components/basics/head.html' %}
+</head>
+
+<body>
+    <!-- Fixed navbar -->
+    {% include 'components/basics/nav.html' %}
+
+    <!-- Icons Grid-->
+    <section class="features-icons bg-light text-center">
+        <div class="container" style="min-height: 500px;">
+            <div class="row pt-2">
+                <div class="col  col-12">
+                    <div id="login-info" hidden=true>Iniciando sesión</div>
+                    <div class="card mx-auto" style="width: 18rem;">
+                        <div class="card-body">
+                            <h5 class="card-title">Elige método de inicio de sesión</h5>
+                            <p>Utilizamos tu correo para identificar las tiendas que te pertenecen, también utilizamos
+                                cookies para
+                                que puedas iniciar sesión.</p>
+                            <div id="firebaseui-auth-container"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    {% include 'components/basics/footer.html' %}
+</body>
+
+</html>

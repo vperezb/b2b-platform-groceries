@@ -1,0 +1,5 @@
+infra:
+  project_name : almarcat
+  storage_bucket_name : almarcat-static
+store:
+  contact_mail : vperezb@proton.me

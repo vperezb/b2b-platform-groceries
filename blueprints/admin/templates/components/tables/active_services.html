@@ -1,0 +1,27 @@
+{% if active_services %}
+<table class="table table-striped" style="width: 100%;">
+  <thead class="">
+    <tr>
+      <th scope="col">Título</th>
+      <th scope="col">Estado</th>
+      <th scope="col">Comentarios</th>
+      <th scope="col">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for service in active_services %}
+    <tr >
+      <td> {{ service['title'] }}</td>
+      <td><span class="badge badge-pill badge-{{ service['status_color']}}">{{ service['status_text'] }}</span>
+        </td>
+      <td>{{ service['comments'] | truncate(60) }}</td>
+      <td><a
+        href="{% raw %}https://mail.google.com/mail/u/0/?view=cm&fs=1&to=victor.perez@almarcat.com&su=Más%20información%20tienda%20{% endraw %}{{ user_data['email'] }}{% raw %}&body=Escríbenos%20tus%20dudas%20aquí&tf=1{% endraw %}"
+        target="_blank">Soporte</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p class="text-muted">Todavía no tienes ningún servicio activo.</p>
+{% endif %}

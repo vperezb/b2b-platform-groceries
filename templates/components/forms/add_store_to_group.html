@@ -1,0 +1,11 @@
+<form method="post" action="{{ url_for('admin.store_to_group_engine') }}">
+    <div class="row">
+        <div class="col">
+            <input type="text" class="form-control" name="store_code_name" placeholder="@nombre_tienda">
+            <input type="text" class="form-control" name="storegroup_code_name" value="{{ my_store['code_name'] }}" hidden>
+        </div>
+        <div class="col">
+            <input type="submit" value="Añadir tienda">
+        </div>
+    </div>
+</form>
