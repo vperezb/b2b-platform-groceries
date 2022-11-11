@@ -92,17 +92,6 @@ https://support.google.com/webmasters/answer/189077?hl=es
 Language subtags: https://www.iana.org/assignments/language-subtag-registry/language-subtag-registry
 
 
-# Presens
-
-Cambra de comerç - https://docs.google.com/presentation/d/1SYVnXaGPxJn-tu5kn8fGoUqLGWNrRabigevljPa03Yc/edit#slide=id.g6dd8a01a33_0_0
-cdmon - https://docs.google.com/presentation/d/1EbnpZBzVHF7EbugTaHWZpkcpxvhBekzw5DOot76Cszk/edit#slide=id.g945bf1f904_0_7
-internal bcnmarket - https://docs.google.com/presentation/d/1LBkA9r8KzMwlBX8xrgoZjgbElkbC3yq2IkG4z0K7yEQ/edit#slide=id.g8993e89140_0_0
-bcnmarket - https://docs.google.com/presentation/d/1bnBJUige2D3h1mhW9rMzcWNGpjsXQRV6VULvS1O6JFU/edit#slide=id.g8993e89140_0_0
-glovo - https://docs.google.com/presentation/d/1KGi9kGXnwpgYOACLyfKmKpTk3J-i8H_XTlQUEKCFOW4/edit#slide=id.g6dd8a01a33_0_0
-Data - https://docs.google.com/presentation/d/1dzmaGdR8r2hillNpYuZXrh2q-G3pePO7jy0iUJx39Ms/edit#slide=id.g958a425f6a_0_5
-Producto - https://docs.google.com/presentation/d/1ik7qkK4-0JsWbk5tZ_7WgqbtbwDW473WU9I86-NLl1E/edit
-Diputació de Barcelona - https://docs.google.com/presentation/d/1_ofENRY9uwTVcdgIQPAvdS0JY---F6WrB0Q_od-nbEA/edit#slide=id.g6dd8a01a33_0_0
-
 # Location Maps Geo
 
 https://developers.google.com/maps/documentation/javascript/examples/places-autocomplete-addressform
